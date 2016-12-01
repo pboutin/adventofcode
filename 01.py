@@ -1,8 +1,8 @@
-def multiply_tuple(original_tuple, factor):
-    return (original_tuple[0] * factor, original_tuple[1] * factor)
-
 def merge_tuples(a, b):
     return (a[0] + b[0], a[1] + b[1])
+
+def format(position):
+    return "{} ({})".format(str(position), abs(position[0]) + abs(position[1]))
 
 UP = (0,1)
 DOWN = (0,-1)
@@ -16,21 +16,27 @@ instructions = raw_input.split(', ')
 
 current_position = (0, 0)
 current_direction = UP
+position_history = [current_position]
+intersection_found = False
 
 for instruction in instructions:
-    distance = int(instruction[1:])
-
     if current_direction == UP:
-        new_direction = LEFT if instruction[0] == 'L' else RIGHT
+        current_direction = LEFT if instruction[0] == 'L' else RIGHT
     elif current_direction == DOWN:
-        new_direction = RIGHT if instruction[0] == 'L' else LEFT
+        current_direction = RIGHT if instruction[0] == 'L' else LEFT
     elif current_direction == RIGHT:
-        new_direction = UP if instruction[0] == 'L' else DOWN
+        current_direction = UP if instruction[0] == 'L' else DOWN
     elif current_direction == LEFT:
-        new_direction = DOWN if instruction[0] == 'L' else UP
+        current_direction = DOWN if instruction[0] == 'L' else UP
 
-    current_position = merge_tuples(current_position, multiply_tuple(new_direction, distance))
+    for step in range(int(instruction[1:])):
+        current_position = merge_tuples(current_position, current_direction)
 
-    current_direction = new_direction
+        if not intersection_found:
+            if current_position in position_history:
+                print("The first place your visited twice is : {}".format(format(current_position)))
+                intersection_found = True
+            else:
+                position_history.append(current_position)
 
-print("The distance is : {}".format(abs(current_position[0]) + abs(current_position[1])))
+print("The total distance is : {}".format(format(current_position)))
