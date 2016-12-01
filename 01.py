@@ -1,23 +1,36 @@
+def multiply_tuple(original_tuple, factor):
+    return (original_tuple[0] * factor, original_tuple[1] * factor)
+
+def merge_tuples(a, b):
+    return (a[0] + b[0], a[1] + b[1])
+
+UP = (0,1)
+DOWN = (0,-1)
+LEFT = (-1,0)
+RIGHT = (1,0)
+
 with open('misc/01.txt') as file_input:
     raw_input = file_input.read()
 
-directions = raw_input.split(', ')
+instructions = raw_input.split(', ')
 
-x_pos = 0
-y_pos = 0
+current_position = (0, 0)
+current_direction = UP
 
-for direction in directions:
-    distance = int(direction[1:])
+for instruction in instructions:
+    distance = int(instruction[1:])
 
-    x_pos += distance * (-1 if direction[0] == 'R' else 1)
+    if current_direction == UP:
+        new_direction = LEFT if instruction[0] == 'L' else RIGHT
+    elif current_direction == DOWN:
+        new_direction = RIGHT if instruction[0] == 'L' else LEFT
+    elif current_direction == RIGHT:
+        new_direction = UP if instruction[0] == 'L' else DOWN
+    elif current_direction == LEFT:
+        new_direction = DOWN if instruction[0] == 'L' else UP
 
-    # Plan rotation
-    old_y_pos = y_pos
-    if direction[0] == 'R':
-        y_pos = x_pos
-        x_pos = -1 * old_y_pos
-    else:
-        y_pos = -1 * x_pos
-        x_pos = old_y_pos
+    current_position = merge_tuples(current_position, multiply_tuple(new_direction, distance))
 
-print("The distance is : {}".format(abs(x_pos) + abs(y_pos)))
+    current_direction = new_direction
+
+print("The distance is : {}".format(abs(current_position[0]) + abs(current_position[1])))
