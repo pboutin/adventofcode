@@ -58,7 +58,6 @@ fs.readFile('misc/04.txt', 'utf8', (err, textInput) => {
     }
 
     var rooms = textInput.split('\n').filter((line) => !!line).map(parse);
-    console.log(rooms);
 
     var sumOfValidIds = rooms.reduce((sum, room) => {
         return sum + (getChecksumFor(room.name) === room.checksum ? room.sectorId : 0)
